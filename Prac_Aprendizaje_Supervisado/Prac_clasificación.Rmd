@@ -1,0 +1,292 @@
+---
+title: "prac_clasificacion"
+author: "Roberto Hermoso"
+date: "2/12/2020"
+output: pdf_document
+---
+
+#Aprendizaje Supervisado en R
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Ejercicio 1: datos del titanic y rpart
+
+Se le proporciona un fichero de nombre “train.csv” que contiene 4 columnas con valores numéricos
+y categóricos. Las variables son:
+- Sobrevivió, 0 ó 1, donde 0 es no sobrevive.
+- Clase: los pasajeros tienen billete de 1º, 2º o 3º.
+- Sexo: variable categórica con el género.
+- Y finalmente edad.
+Estos datos representan las variables de 500 pasajeros del crucero Titanic. El objetivo es crear un
+modelo de predicción de la supervivencia de los pasajeros. Para ello realice los siguientes pasos:
+
+### 1: Cargue los datos en una variable de nombre train que será un dataframe con 4 variables o atributos y 500 observaciones (pasajeros) que vienen codificados en el fichero. Para ello:
+
+```{r}
+train<-read.delim("./data/train.csv", sep = "\t", head = TRUE)
+rownames(train) <- train$id
+train$id <- NULL
+
+# Set random seed
+set.seed(1)
+
+```
+
+Inspeccione el conjunto de entrenamiento (funciones head, str, dim).
+
+### 2: Cargue los siguientes paquetes para crear árboles de decisión
+
+You can also embed plots, for example:
+
+```{r eval=FALSE, include=FALSE}
+install.packages("rattle")
+library(rpart)
+library(rattle)
+library(RColorBrewer)
+
+```
+### 3: La función para crear árboles de decisión que vamos a utilizar es rpart. Teclee en la consola help(“rpart”) y estudie como aplicarla. Utilice los parámetros:
+
+o Formula, indicando que el objetivo a predecir es la supervivencia en función del
+resto de atributros.
+o Indique el conjunto de entrenamiento.
+o El parámetro method indique que va a realizar clasificación sobre variables
+categóricas o factor en R.
+o Visualice el resultado usando la función plot.
+
+```{r}
+tree <- rpart(Survived~., train, method = "class")
+
+#Plot del árbol
+fancyRpartPlot(tree)
+```
+o Analizamos el resultado. Indique cuál de las siguientes afirmaciones es correcta,
+(recuerda, 0 no sobrevive 1 vive) :
+  ▪ El árbol predecirá que las pasajeras de la clase 3 no sobrevivirán, aunque está
+  cerca.
+  ▪ La clase mayoritaria del nodo raíz es positiva, lo que denota supervivencia.
+  ▪ El atributo que sigue al género es hombre es una variable categórica.
+
+### 4: Cargue el conjunto de datos de test del fichero con nombre “test.csv” de igual modo en el que se realizó la carga de los datos de entrenamiento. Realice la predicción con el conjunto de test para construir la matriz de confusión y calcular la accuracy del modelo, utilizando las funciones predict y table respectivamente. 
+
+
+```{r}
+test<-read.delim("./data/test.csv", sep = "\t", head = TRUE)
+test$id <- NULL
+```
+
+Predice los valores del conjunto de test
+```{r}
+pred <- predict(tree, test, type = "class")
+```
+
+Construye la matriz de confusión
+```{r}
+conf <- table(test$Survived, pred)
+```
+
+Calcula accuacy
+```{r}
+acc <- sum(diag(conf)) / sum(conf)
+print(acc)
+```
+### 5: Copie el siguiente código
+
+```{r}
+set.seed(1)
+tree <- rpart(Survived ~., train, method="class",
+control=rpart.control(cp=0.00001))
+fancyRpartPlot(tree)
+```
+¿Qué observa? El modelo resultante funciona bien si calculamos su accuracy pero es difícil
+de interpretar. Para arreglar esta situación pode el árbol con la función prune y vuelva a
+dibujarlo.
+
+
+```{r}
+#Podamos el árbol
+pruned <- prune(tree, cp = 0.01)
+
+#Después lo mostramos
+fancyRpartPlot(pruned)
+
+```
+### 6: ¿Los árboles construidos qué heurística aplican? Para modificar la heurística utilice en la función rpart el parámetro de entrada Split y genere el árbol con nombre tree_i.
+
+```{r}
+tree_i <- rpart(Survived ~ ., train, method = "class", parms = list(split = "information"))
+
+pred_i <- predict(tree_i, test, type = "class")
+conf_i <- table(test$Survived, pred_i)
+acc_i <- sum(diag(conf_i)) / sum(conf_i)
+acc_i
+print("La accuracy anterior con el criterio de división Gini es:  ")
+acc
+```
+
+# Ejercicio 2: Datos del titanic y evaluaci´n mediante curva ROC
+
+Utilizando el ejercicio anterior, su árbol de decisión creado, en lugar de obtener la clase como
+resultado de predicción vamos a obtener la probabilidad de que se obtenga una clase con el
+siguiente código:
+
+```{r}
+all_probs <- predict(tree, test, type="prob")
+summary(all_probs)
+all_probs[,2]
+probs <- all_probs[,2]
+
+## Esto es para el punto 3
+#Predict probability values using the model: all_probs
+all_probs_i <- predict(tree_i, test, type="prob")
+probs_i <- all_probs_i[,2]
+```
+
+Vamos a realizar una análisis ROC y para ello siga los siguientes pasos:
+  1. Cargue la librería ROCR. Llame a la función prediction pasando como argumentos las
+  probabilidades y la columna del atributo clase. El resultado de esta función, juntos con “tpr”
+  y “fpr” utilícelo como argumentos de entradas de la función performance. Finalmente llame
+  a la función plot dando como entrada el resultado de la función anterior.
+```{r}
+#Cargamos la librería ROCR
+install.packages("ROCR")
+library(ROCR)
+
+```
+
+```{r}
+#Make a prediction object: pred
+pred <- prediction(probs, test$Survived)
+perf <- performance(pred, "tpr", "fpr")
+
+#Plot this curve
+plot(perf)
+```
+  
+  2. Para obtener el valor de AUC o área bajo la curva debemos escribir el siguiente código:
+
+```{r}
+#Make a performance object: perf
+perf_auc <- performance(pred, "auc")
+
+#Print out the AUC
+print(perf_auc@y.values[1])
+```
+
+  3. Realiza los mismos pasos pero con las predicciones obtenidas por el árbol de decisión que se
+  creo utilizando la ganancia de información como heurística, es decir, con el árbol ID3.
+
+```{r}
+
+#Make a prediction object: pred
+pred_i <- prediction(probs_i, test$Survived)
+perf <- performance(pred_i, "tpr", "fpr")
+
+#Plot this curve
+plot(perf)
+
+#Make a performance object: perf
+perf_auc <- performance(pred_i, "auc")
+
+#Print out the AUC
+print(perf_auc@y.values[1])
+```
+#Ejercicio 3: Datos del titanic y knn
+
+El objetivo es crear un modelo de predicción de la supervivencia de los pasajeros del Titanic
+utilizando una técnica de aprendizaje basado en dinstancia, el knn. Para ello sigua los siguientes
+pasos: 
+
+  1. La función knn tiene como parámetro el conjunto de entrenamiento, el de test y el vector de
+  clases, para ello realice lo siguiente:
+  
+```{r}
+train_labels <- train$Survived
+test_labels <- test$Survived
+knn_train <- train
+knn_test <- test
+knn_train$Survived <- NULL
+knn_test$Survived <- NULL
+
+```
+  
+  2. Normalice los atributos numéricos, es decir, la clase y edad del pasajero. 
+  
+```{r}
+library(knitr)
+library(dplyr)
+
+normalize <- function(x) {
+return ((x - min(x)) / (max(x) - min(x))) }
+
+knn_test_escalada = select(knn_test, Pclass, Age)
+knn_test_escalada <- as.data.frame(lapply(knn_test_escalada, normalize))
+#knn_test_escalada$Sex <- knn_test$Sex
+
+knn_train_escalada = select(knn_train, Pclass, Age)
+knn_train_escalada <- as.data.frame(lapply(knn_train_escalada, normalize))
+#knn_train_escalada$Sex <- knn_train$Sex
+
+``` 
+  3. Llame a la función knn y obtenga la matriz de confusión. A partir de ella calcule el accuracy
+  del modelo.
+  
+
+```{r}
+library(class)
+
+set.seed(1)
+knn_26 <- knn(train = knn_train_escalada, test = knn_test_escalada, cl=train_labels, k = 26)
+
+#Accuracy
+acc_26 <- 100 * sum(test_labels == knn_26)/NROW(test_labels)  # For knn = 26
+acc_26
+
+#Confusion Matrix
+
+confusion_matrix_26 <- table(knn_26 ,test_labels)
+confusion_matrix_26
+```
+
+  4. Vamos a realizar un estudio para averiguar cuál es el mejor valor de K para este conjunto de
+  datos. Con este objetivo vamos a generar un vector de nombre range con todos los k a
+  analizar y un vector de nombre acc donde almacenaremos los valores de accuracy de todos
+  los modelos. Para ello copie el siguiente código:
+  
+  
+```{r}
+set.seed(1)
+
+library(class)
+range <- 1:round(0.2 * nrow(knn_train))
+accs <- rep(0, length(range))
+```
+
+  Escriba un bucle en donde para cada valor de k llame a la función knn y calcule su valor de
+  accuracy. Finalmente visualizamos los accuracy obtenidos y nos quedamos con el k cuyo
+  accuracy es máximo: 
+
+```{r}
+i <- 1
+for (i in range) {
+    knn <- knn(train = knn_train_escalada, test = knn_test_escalada, cl=train_labels, k = i)
+    ac <- 100 * sum(test_labels == knn)/NROW(test_labels)  # For knn = 26
+    accs[[i]] <- ac
+    i <- i + 1
+}
+accs
+range
+plot(x=range, y=accs, type="l", lty=1,
+     main="Accuracy for each K",
+     xlab="K", ylab="accuracy")
+
+max = which(accs==max(accs))
+best_k = range[max]
+```
+```{r}
+print("The bests Ks are: ")
+best_k
+```
+

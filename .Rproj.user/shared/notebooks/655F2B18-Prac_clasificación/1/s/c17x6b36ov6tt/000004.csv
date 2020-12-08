@@ -1,0 +1,13 @@
+"0","#Make a performance object: perf"
+"0","perf_auc <- performance(pred, ""auc"")"
+"0",""
+"0","#Print out the AUC"
+"0","print(perf_auc@y.values[1])"
+"1","[[1]]
+"
+"1","[1]"
+"1"," 0.8543548"
+"1","
+"
+"1","
+"

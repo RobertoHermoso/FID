@@ -1,0 +1,7 @@
+"0","train<-read.delim(""./data/train.csv"", sep = ""\t"", head = TRUE)"
+"0","rownames(train) <- train$id"
+"0","train$id <- NULL"
+"0",""
+"0","# Set random seed"
+"0","set.seed(1)"
+"0",""

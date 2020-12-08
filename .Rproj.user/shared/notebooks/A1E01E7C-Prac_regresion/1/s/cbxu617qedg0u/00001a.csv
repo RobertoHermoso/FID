@@ -1,0 +1,3 @@
+"0","plot(sales ~ comp, data = shop,"
+"0"," xlab = ""Comp"","
+"0"," ylab = ""Sales"")"

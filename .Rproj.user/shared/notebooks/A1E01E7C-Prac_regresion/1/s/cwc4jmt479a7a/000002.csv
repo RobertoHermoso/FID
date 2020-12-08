@@ -1,0 +1,1 @@
+"0","qqnorm(lm_shop$residuals, ylab = ""Residual Quantiles"")"

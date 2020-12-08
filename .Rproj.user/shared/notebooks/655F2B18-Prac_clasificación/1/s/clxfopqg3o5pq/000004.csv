@@ -1,0 +1,6 @@
+"0","#Podamos el árbol"
+"0","pruned <- prune(tree, cp = 0.01)"
+"0",""
+"0","#Después lo mostramos"
+"0","fancyRpartPlot(pruned)"
+"0",""

@@ -1,0 +1,7 @@
+"0","train_labels <- train$Survived"
+"0","test_labels <- test$Survived"
+"0","knn_train <- train"
+"0","knn_test <- test"
+"0","knn_train$Survived <- NULL"
+"0","knn_test$Survived <- NULL"
+"0",""

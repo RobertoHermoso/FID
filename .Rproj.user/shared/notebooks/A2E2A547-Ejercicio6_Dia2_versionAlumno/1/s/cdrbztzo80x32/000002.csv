@@ -1,0 +1,8 @@
+"0",""
+"0","# Dimensión o tamaño de los datos"
+"0",""
+"0","print(dim(nobel)[1])"
+"1","[1]"
+"1"," 911"
+"1","
+"

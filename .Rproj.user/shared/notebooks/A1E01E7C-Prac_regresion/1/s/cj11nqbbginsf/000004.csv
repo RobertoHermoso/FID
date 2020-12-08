@@ -1,0 +1,3 @@
+"0","# Linear model: change the formula"
+"0","lm_wb <- lm(urb_pop ~ log(cgdp),"
+"0","data = world_bank_train) "

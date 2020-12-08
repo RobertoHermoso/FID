@@ -1,0 +1,1 @@
+"0","shop <-read.delim(""./data/sales.csv"", sep = ""\t"", head = TRUE)"

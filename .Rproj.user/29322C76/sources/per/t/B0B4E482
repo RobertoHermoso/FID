@@ -1,0 +1,32 @@
+{
+    "id": "B0B4E482",
+    "path": null,
+    "project_path": null,
+    "type": "r_dataframe",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1607371992570.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "expression": "shop",
+        "caption": "shop",
+        "totalObservations": 27,
+        "displayedObservations": 27,
+        "variables": 7,
+        "cacheKey": "AA4B4392",
+        "object": "shop",
+        "environment": "",
+        "contentUrl": "grid_resource/gridviewer.html?env=&obj=shop&cache_key=AA4B4392&max_cols=50",
+        "preview": 0
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1837104870008,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1607371992570,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -1,0 +1,7 @@
+"0",""
+"0","#Make a prediction object: pred"
+"0","pred_i <- prediction(probs_i, test$Survived)"
+"0","perf <- performance(pred_i, ""tpr"", ""fpr"")"
+"0",""
+"0","#Plot this curve"
+"0","plot(perf)"

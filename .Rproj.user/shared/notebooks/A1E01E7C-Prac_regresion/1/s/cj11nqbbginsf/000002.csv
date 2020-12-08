@@ -1,0 +1,3 @@
+"0","plot(urb_pop ~ log(cgdp), data = world_bank_train,"
+"0"," xlab = ""log(GDP per Capita)"","
+"0"," ylab = ""Percentage of urban population"")"
