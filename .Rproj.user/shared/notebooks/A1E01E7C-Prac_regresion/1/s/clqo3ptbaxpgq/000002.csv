@@ -1,3 +1,0 @@
-"0","plot(lm_shop$fitted.values, lm_shop$residuals,"
-"0"," xlab = ""Fitted values"", ylab = ""Residuals"")"
-"0",""

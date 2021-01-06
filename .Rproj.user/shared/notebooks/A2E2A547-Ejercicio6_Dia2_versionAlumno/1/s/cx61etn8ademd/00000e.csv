@@ -1,8 +1,0 @@
-"0",""
-"0","# Lectura del fichero:"
-"0",""
-"0","nobel<- read.csv(""./data/nobel.csv"")"
-"0",""
-"0","# Un primer vistazo a los datos"
-"0",""
-"0","print(nobel)"

@@ -1,4 +1,0 @@
-"0","library(class)"
-"0","nose_width_new <- kang_nose[1,]"
-"0","kang_nose_i <- predict(lm_kang, newdata = nose_width_new)"
-"0","kang_nose[1,] - kang_nose_i"

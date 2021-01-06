@@ -1,5 +1,0 @@
-"0",""
-"0","# En el eje X van las décadas y en el Y el porcentaje asociado. "
-"0","library(dplyr)"
-"0"," plot(premios_eeuu)"
-"0",""

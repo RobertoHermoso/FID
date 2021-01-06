@@ -1,5 +1,0 @@
-"0","# Repetimos el razonamiento: vector de logicos, calculo de decada, agrupar por decada y calcular gracias al vector de logicos"
-"0","premios_mujeres = mutate(nobel, female = sex==""Female"")"
-"0","premios_mujeres = mutate(premios_mujeres , decada = year - year %% 10)"
-"0","premios_mujeres  = aggregate(premios_mujeres[""female""], list(""Decada"" = premios_mujeres$decada, ""Categoria"" = premios_mujeres$category),  function(x) c(mean = round(mean(x, na.rm=TRUE), 2)))"
-"0",""

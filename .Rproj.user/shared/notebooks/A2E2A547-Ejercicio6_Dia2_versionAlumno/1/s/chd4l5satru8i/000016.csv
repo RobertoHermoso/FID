@@ -1,7 +1,0 @@
-"0",""
-"0","# Filtramos y usamos la función top_n: argumentos ""5,desc(year)"""
-"0","library(dplyr)    "
-"0","premios_female = filter(nobel, sex == ""Female"")"
-"0",""
-"0","top5 = top_n(premios_female, wt = -year, 5)"
-"0",""

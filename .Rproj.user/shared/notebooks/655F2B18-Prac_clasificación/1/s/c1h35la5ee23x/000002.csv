@@ -1,4 +1,0 @@
-"0","tree <- rpart(Survived~., train, method = ""class"")"
-"0",""
-"0","#Plot del árbol"
-"0","fancyRpartPlot(tree)"

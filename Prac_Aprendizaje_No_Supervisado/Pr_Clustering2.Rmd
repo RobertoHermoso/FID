@@ -1,0 +1,43 @@
+---
+title: "Pr_Clustering2"
+author: "Roberto Hermoso"
+date: "5/1/2021"
+output: html_document
+---
+
+#Practica Clustering
+
+## Ejercicio 1: estudio sobre PCA (Principal Component Analysis)
+
+Otro tipo de tarea no supervisada es la reducción de la dimensionalidad, encontrando estructuras en los atributos. Con este objetivo vamos a utilizar la técnica de PCA. Dicha técnica tiene tres objetivos: encontrar combinaciones lineales de los atributos para crear componentes principales; mantener la varianza de los datos; y dichas componentes son no correlacionadas. En el caso de dos dimensiones, una componente principal sería la recta de regresión y las distancias de las observaciones a la recta se denomina “factor score” o “component score”.
+
+Los datos de iris están cargados por defecto en R, basta poner el nombre en R y podrá utilizarlos. Explore brevemente este conjunto de datos y aplíquele un PCA. La función para hacerlo en R es la función: prcomp(datos)
+
+
+```{r}
+ir.pca <- prcomp(iris[-5], scale=T)
+# prcomp(iris.standardized, scale=T)
+# prcomp(iris.standardized)
+# princomp(iris.standardized, cor=T)
+print(ir.pca)
+```
+
+1. ¿Con cuántos ejes coordenados se obtiene el 90% de la variabilidad de los datos? Función summary
+
+
+```{r}
+summary(ir.pca)
+```
+2. Represente gráficamente el PCA obtenido. (Funciones plot y biplot)
+
+```{r}
+plot(ir.pca)
+biplot(ir.pca)
+```
+3. ¿Cuál es la posición respecto de los nuevos ejes coordenados de los antiguos ejes o atributos? (Vector de rotación)
+
+```{r}
+ir.pca$rotation
+```
+
+4. Realice un estudio de cómo afecta el escalado, o normalización de los datos, a través de un estudio de cómo afecta éste al PCA.

@@ -1,5 +1,0 @@
-"0",""
-"0","# Contamos por países: columna birth_country"
-"0","# [Nota: se ordena poniendo ""desc(n)"" dentro del verbo arrange, siendo n el valor que se cuenyta]"
-"0","countries = count(nobel,  birth_country)"
-"0","countries =  arrange(countries, desc(x = n))"

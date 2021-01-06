@@ -105,14 +105,13 @@ GLMNET intenta obtener un modelo simple y para ello proporciona un valor alpha e
 Para el próximo código utilice la función train exactamente igual que antes indicando el nuevo modelo a calcular. Los parámetros del algoritmo glmnet son por defecto y esto aplicará tres valores de alpha y 3 de lambda. Finalmente, imprima el modelo para ver cómo se ha generado.
 
 ```{r}
-
-# model_class_glmnet <- ___________________(
-#   ___________________, df_clas,
-#   method = ___________________,
-#   trControl = ___________________
-# ) # aplica 3 valores de alpha y 3 valores de lambda
-# 
-# model_class_glmnet
+model_class_glmnet <- train(
+  Status_E2_C3~ .,  df_clas,
+   method = 'glmnet',
+   trControl = myControl_clas
+ ) # aplica 3 valores de alpha y 3 valores de lambda
+ 
+model_class_glmnet
 
 ```
 
@@ -122,16 +121,16 @@ tuneGrid = expand.grid(alpha = 0:1,
                          lambda = seq(0.0001, 1, length = 20))
 
 ```{r}
-# # Train glmnet with custom trainControl and tuning: model
-# model_class_glmnet_tuning <- ___________________(
-#   ___________________ , df_clas,
-#   tuneGrid = ___________________(___________________,
-#                          ______________________________________),
-#   method = ___________________,
-#   trControl = ___________________
-# )
-# 
-# model_class_glmnet_tuning
+ # Train glmnet with custom trainControl and tuning: model
+model_class_glmnet_tuning <- train(
+  Status_E2_C3~ .,  df_clas,
+  tuneGrid = expand.grid(alpha = 0:1,
+                         lambda = seq(0.0001, 1, length = 20)),
+   method = 'glmnet',
+   trControl = myControl_clas
+ )
+ 
+model_class_glmnet_tuning
 ```
 
 ## Función train: xgbTree
@@ -139,9 +138,9 @@ tuneGrid = expand.grid(alpha = 0:1,
 Vamos a generar el modelo utilizando uno de los algoritmos TOP en kaggle. Es uno de los algoritmos más utilizados últimamente
 
 ```{r}
-# model_clas_xgbTree <- ___________________(___________________ , df_clas,
-#                             method = ___________________,
-#                             trControl=___________________)
+model_clas_xgbTree <- train(  Status_E2_C3~ .,  df_clas,
+                            method = 'xgbTree',
+                                trControl = myControl_clas)
 
 ```
 
@@ -151,15 +150,15 @@ Vamos a generar el modelo utilizando uno de los algoritmos TOP en kaggle. Es uno
 Para comparar modelos Caret hace automáticamente un remuestreo para comparar distintos modelos en igualdad de condiciones. Esto lo hace con la función resamples a la que le pasamos una lista con los modelos generados anteriormente.
 
 ```{r}
-# model_list <- list(
-#   glm = ___________________, 
-#   glmnet = ___________________,
-#   glmnet_tunning = ___________________,
-#   xgbTree = ___________________
-# )
-# 
-# # Pass model_list to resamples(): resamples
-# resamples <- resamples(___________________)
+model_list <- list(
+  glm =  model_clas_glm, 
+   glmnet =  model_class_glmnet,
+   glmnet_tunning = model_class_glmnet_tuning,
+   xgbTree = model_clas_xgbTree
+ )
+ 
+ # Pass model_list to resamples(): resamples
+ resamples <- resamples( model_list )
 
 ```
 
@@ -168,11 +167,11 @@ Finalmente, vamos a mostrar gráficamente los resultados obtenidos, con lo que d
 Para ello en la función summary escriba como parámetro de entrada la variable resample
 ```{r}
 # # Summarize the results
-# summary(___________________, metric="ROC")
-# 
-# # GENIAL PARA VER COMPARATIVA DE MANERA VISUAL
-# bwplot(___________________, metric = "ROC") # display univariate visualizations of the resampling distributions
-# dotplot(___________________, metric="ROC")
+ summary(resamples, metric="ROC")
+ 
+ # GENIAL PARA VER COMPARATIVA DE MANERA VISUAL
+ bwplot(resamples, metric = "ROC") # display univariate visualizations of the resampling distributions
+ dotplot(resamples, metric="ROC")
 
 
 ```

@@ -1,5 +1,0 @@
-"0","set.seed(1)"
-"0",""
-"0","library(class)"
-"0","range <- 1:round(0.2 * nrow(knn_train))"
-"0","accs <- rep(0, length(range))"

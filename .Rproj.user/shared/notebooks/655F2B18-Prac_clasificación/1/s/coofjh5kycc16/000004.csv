@@ -1,4 +1,0 @@
-"0","set.seed(1)"
-"0","tree <- rpart(Survived ~., train, method=""class"","
-"0","control=rpart.control(cp=0.00001))"
-"0","fancyRpartPlot(tree)"

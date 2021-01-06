@@ -1,4 +1,0 @@
-"0",""
-"0","# De manera análoga"
-"0","joven=arrange(nobel_edad, desc(x=-age))[1,]"
-"0",""

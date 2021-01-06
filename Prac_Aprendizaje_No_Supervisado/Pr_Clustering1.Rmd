@@ -1,0 +1,146 @@
+---
+title: "Pr_Clustering1"
+author: "Roberto Hermoso"
+date: "4/1/2021"
+output: html_document
+---
+
+#Practica Clustering
+
+## Ejercicio 1: Estudio de kmeans con datos sintéticos de ejemplo
+
+Los datos a utilizar se han creado ad hoc para este ejercicio y se encuentran en el fichero de nombre “toy_example.txt”. Para utilizar el algoritmo de clustering K-means:
+
+1. Cargue los datos en memoria utilizando la función read.delim utilizando sus tres parámetros de entrada: nombre del fichero, separador e indique que el fichero no tiene cabecera “head=FALSE”.
+
+```{r}
+toys = read.delim('./toy_example.txt' ,sep='\t' ,head=FALSE)
+```
+
+2. Invoque el algoritmo kmeans indicando: el dataset, con el parámetro center indique 3 cluster y nstar=20.
+
+```{r}
+kmeans_toys = kmeans(x = toys, centers =3, nstart=20)
+```
+
+3. Inspeccione el resultado obtenido con la función “summary” y muestre la asignación de cada muestra a un cluster con “res$cluster”.
+
+```{r}
+summary(kmeans_toys$cluster)
+```
+
+4. Haga un plot del resultado utilizando la siguiente línea de código:
+
+
+```{r}
+plot(toys, col=kmeans_toys$cluster, main="Tres clusters")
+```
+5. Ejecute 6 veces el algoritmo Kmeans con el párametro “nstart=1”. Vamos a visualizar el resultado con la función plot. Antes de realizar las 6 ejecuciones indique que vamos a dibujar varias gráficas en dos filas y 3 columnas:
+
+
+Finalmente, mediante un bucle for indique que vamos a realizar 6 llamadas a la función kmeans y a la función plot con los resultados:
+
+```{r}
+par(mfrow = c(2, 3))
+for(i in 1:6) {
+  km_puntos_aux = kmeans(x = toys, centers =3, nstart=1)
+  plot(toys,col=km_puntos_aux$cluster, main=km_puntos_aux$tot.withinss)
+}
+```
+
+Realice el mismo código modificando el parámetro nstar=25, ¿qué observa?
+
+```{r}
+par(mfrow = c(2, 3))
+for(i in 1:6) {
+  km_puntos_aux = kmeans(x = toys, centers =3, nstart=25)
+  plot(toys,col=km_puntos_aux$cluster, main=km_puntos_aux$tot.withinss)
+}
+```
+6. La elección del parámetro número de cluster (centers) se puede realizar mediante varias ejecuciones y modificando el número de cluster. Para ello se realiza el siguiente código:
+
+```{r}
+wss <- 0
+for (i in 1:15) {
+km.out <- kmeans(toys, centers = i, nstar=20)
+wss[i] <- km.out$tot.withinss
+}
+plot(1:15, wss, type = "b", xlab = "Number of Clusters",
+ylab = "Within groups sum of squares")
+```
+
+
+Con este código estamos probando hasta 15 número de clusters y en wss se almacena la medida a optimizar. El objetivo es minimizar el error y descubrir a partir de qué punto el error no se minimiza lo suficiente como para que merezca aumentar la complejidad del modelo final. ¿Cuál es el mejor k?
+
+
+##Ejercicio 2: Clustering jerárquico
+
+Vamor a realizar un clustering jerárquico bottom-up. Para utilizar el algoritmo de clustering mediante la función hclust siga los siguientes:
+
+1. Calcule la similaridad entre las observaciones o muestras como la distancia Euclídea entre las mismas utilizando la función dist. Y utilice las distancias como parámetro de entrada de la función hclust.
+
+```{r}
+d <- dist(toys, method = "euclidean")
+
+hc1 <- hclust(d, method = "complete" )
+```
+
+2. Inspeccione el resultado con la función summary, ¿qué observa? Para hacer más interpretable los resultados vamos a visualizar el resultado mediante un dendograma. Para ello utilice la función plot y marque puntos de corte con la función cutree:
+
+```{r}
+s = summary(hc1)
+s
+```
+
+  
+  * Corte utilizando como parámetro la altura h=7, h=4 y h=2,5. Marque la línea de corte utilizando la línea de código.     ¿Cuál es la altura de cluster que obtiene 3 clusters?
+  
+  
+```{r}
+plot(hc1)
+abline(h = 7, col = "red")
+c <- cutree(hc1, h = 7)
+plot(c)
+```
+
+```{r}
+plot(hc1)
+abline(h = 4, col = "red")
+c <- cutree(hc1, h = 4)
+plot(c)
+```
+
+```{r}
+plot(hc1)
+abline(h = 2.5, col = "red")
+c <- cutree(hc1, h = 2.5)
+plot(c)
+```
+
+* Y utilizando como parámetro el número de cluster k=3.
+
+
+```{r}
+c <- cutree(hc1, k = 3)
+plot(c)
+```
+
+3. Vamos a utilizar distintos métodos de linkage, para ello escriba help(hclust) y viendo los parámetros complete el siguiente código.
+
+```{r}
+# Cluster usando método completo
+hclust.complete <- hclust(dist(toys), method = "complete")
+# Average linkage: hclust.average
+hclust.average <- hclust(dist(toys), method = "average")
+# Single linkage
+hclust.single <- hclust(dist(toys), method = "single")
+# Plot dendrogram de hclust.complete, hclust.average y hclust.single
+
+plot(hclust.complete, main = "Complete")
+plot(hclust.average, main = "Average")
+plot(hclust.single, main = "Single")
+```
+
+Utilizando los métodos de linkage se pueden obtener clusters más balanceados. ¿Qué sería deseable? ¿Árboles balanceados o no? Esta pregunta se responde dependiendo del contexto del problema.
+* Los árboles balanceados se utiliza si queremos que el número de observaciones sea equilibrado entre los clusters y con un valor par de observaciones o muestras en ellos.
+*  Por otro lado, si desea detectar valores atípicos, por ejemplo, un árbol desequilibrado es más deseable porque la poda de un árbol no equilibrado puede dar lugar a que la mayoría de las observaciones se asignen a un grupo y solo unas pocas observaciones (valores atípicos) a otros grupos.
